@@ -1,2 +1,2 @@
 # 1kind assesment submission
-- Shromann Majumder
+by Shromann Majumder
