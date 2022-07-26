@@ -19,6 +19,9 @@ def connect():
         print('PostgreSQL database version:')
         cur.execute('SELECT version()')
 
+        cur.execute('insert into newsschema.articles (id, title, author, timing, descr) values (0, \'title_test\', \'author_test\', \'1999-12-12\', \'descr_test\')')        
+        cur.execute('select * from newsschema.articles')
+
         # display the PostgreSQL database server version
         db_version = cur.fetchone()
         print(db_version)

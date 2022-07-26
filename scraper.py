@@ -22,6 +22,8 @@ import pandas as pd
 import requests
 import sys
 import re
+import psycopg2
+from config import config
 
 ################### General Web Scraper ###################
 """
@@ -63,6 +65,10 @@ class news:
         sys.exit(f'related news method not Implemented {self.source}')
 
     def scrape(self, seed, visit_limit):
+        params = config()
+        conn = psycopg2.connect(**params)
+        cur = conn.cursor()
+
         # args: 
         #   seed: specify the seed url for the webscraper to start
         #   visit_limit: specify the number of articles to scrape
@@ -70,6 +76,7 @@ class news:
         visited = set()
 
         news = {'title':[], 'author':[], 'date':[], 'desc':[]}
+
 
         while len(visited) < visit_limit:
             if not urls:
@@ -89,11 +96,14 @@ class news:
                     news['date'].append(date)
                     news['desc'].append(desc)
 
+
                 except AttributeError:
                     continue
 
                 visited.add(url)
-        
+
+                print(f'{title[:20]}...',' | ' ,date,' | ', author,' | ',  f'{desc[:10]}...')
+
                 if len(visited) + len(urls) < visit_limit:
                     urls += self.getRelatedNews(soup)
 
@@ -124,9 +134,9 @@ class CNN(news):
 
     def author(self, soup):
         # extract
-        text = soup.find(class_='metadata__byline__author').get_text().strip(r'by.*,CNN Business')
+        text = soup.find(class_='metadata__byline__author').get_text()
         # clean
-        text = text.strip(r'by.*,CNN Business')
+        text = text.removeprefix('By ').removesuffix(', CNN Business')
         return text
     
     def desc(self, soup):

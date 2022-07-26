@@ -28,6 +28,6 @@ def post():
 
 
 if __name__ == '__main__':
-    # result = scrape()
-    # print(result)
-    post()
+    result = scrape()
+    print(result)
+    # post()
